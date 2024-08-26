@@ -1,6 +1,40 @@
-import React from 'react';
+import React, { useState } from 'react';
+import axios from 'axios';
 
 function Login() {
+    const [credentials, setCredentials] = useState({
+        cpf: "",
+        password: ""
+    });
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setCredentials((prevState) => ({
+            ...prevState,
+            [name]: value,
+        }));
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await axios.post("http://localhost:8080/api/patient/login", credentials);
+            const { token, cpf, first_name } = response.data;
+            localStorage.setItem('token', token);
+            console.log(response.data);
+        } catch (error) {
+            if (error.response) {
+                if (error.response.status === 403) {
+                    console.error("Erro: Usuário não autorizado.");
+                } else {
+                    console.error("Erro na requisição:", error.response.data);
+                }
+            } else {
+                console.error("Erro: Não foi possível conectar ao servidor.");
+            }
+        }
+    };
+
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
             <header className="bg-white shadow w-full py-4">
@@ -10,15 +44,21 @@ function Login() {
             </header>
             <main className="flex flex-col items-center mt-10">
                 <h2 className="text-2xl font-semibold text-gray-700 mb-4">Fazer Login</h2>
-                <form className="bg-white p-6 rounded-lg shadow-md w-96">
+                <form
+                    className="bg-white p-6 rounded-lg shadow-md w-96"
+                    onSubmit={handleSubmit}
+                >
                     <div className="mb-4">
-                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
-                            E-mail
+                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="cpf">
+                            CPF
                         </label>
                         <input
-                            type="email"
-                            id="email"
-                            placeholder="Seu e-mail"
+                            type="text"
+                            id="cpf"
+                            name="cpf"
+                            placeholder="CPF"
+                            value={credentials.cpf}
+                            onChange={handleChange}
                             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline"
                             required
                         />
@@ -30,7 +70,10 @@ function Login() {
                         <input
                             type="password"
                             id="password"
+                            name="password"
                             placeholder="Sua senha"
+                            value={credentials.password}
+                            onChange={handleChange}
                             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline"
                             required
                         />
@@ -51,3 +94,4 @@ function Login() {
 }
 
 export default Login;
+
