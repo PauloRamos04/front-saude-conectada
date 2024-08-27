@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
     const [credentials, setCredentials] = useState({
@@ -15,6 +16,8 @@ function Login() {
         }));
     };
 
+    const navigate = useNavigate();
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -22,6 +25,7 @@ function Login() {
             const { token, cpf, first_name } = response.data;
             localStorage.setItem('token', token);
             console.log(response.data);
+            navigate("/");
         } catch (error) {
             if (error.response) {
                 if (error.response.status === 403) {
