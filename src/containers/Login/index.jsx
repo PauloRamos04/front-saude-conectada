@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Header from '../../components';
 
 function Login() {
     const [credentials, setCredentials] = useState({
@@ -40,12 +41,8 @@ function Login() {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-            <header className="bg-white shadow w-full py-4">
-                <div className="container mx-auto text-center">
-                    <h1 className="text-3xl font-bold text-gray-800">Saúde Conectada</h1>
-                </div>
-            </header>
+        <div className="flex flex-col items-center justify-top min-h-screen bg-gray-100">
+            <Header></Header>
             <main className="flex flex-col items-center mt-10">
                 <h2 className="text-2xl font-semibold text-gray-700 mb-4">Fazer Login</h2>
                 <form

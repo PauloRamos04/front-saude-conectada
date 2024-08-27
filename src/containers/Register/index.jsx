@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Header from '../../components';
 
 function Register() {
     const [formData, setFormData] = useState({
@@ -39,12 +40,8 @@ function Register() {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-            <header className="bg-white shadow w-full py-4">
-                <div className="container mx-auto text-center">
-                    <h1 className="text-3xl font-bold text-gray-800">Saúde Conectada</h1>
-                </div>
-            </header>
+        <div className="flex flex-col items-center justify-top min-h-screen bg-gray-100">
+            <Header></Header>
             <main className="flex flex-col items-center mt-10">
                 <h2 className="text-2xl font-semibold text-gray-700 mb-4">Registrar</h2>
                 <form className="bg-white p-6 rounded-lg shadow-md w-96" onSubmit={handleSubmit}>
