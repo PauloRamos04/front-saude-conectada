@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import Header from '../../components';
+import Header from '../../components/Header';
 
 function Register() {
     const [formData, setFormData] = useState({
@@ -148,9 +148,11 @@ function Register() {
                             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline"
                             required
                         >
-                            <option value="MALE">Masculino</option>
-                            <option value="FEMALE">Feminino</option>
-                            <option value="OTHER">Outro</option>
+                            <option value="" disabled selected>
+                                Selecione o gênero
+                            </option>
+                            <option value="MASCULINO">Masculino</option>
+                            <option value="FEMININO">Feminino</option>
                         </select>
                     </div>
                     <div className="mb-4">
