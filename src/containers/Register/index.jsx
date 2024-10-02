@@ -13,7 +13,7 @@ function Register() {
         address: "",
         gender: "",
         birthDate: "",
-        deficiency: null,
+        deficiency: "",
         photo: null,
         password: ""
     });
@@ -168,6 +168,24 @@ function Register() {
                             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline"
                             required
                         />
+                    </div>
+                    <div className="mb-4">
+                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="deficiency">
+                            Deficiencia
+                        </label>
+                        <select
+                            id="deficiency"
+                            name="deficiency"
+                            value={formData.deficiency}
+                            onChange={handleChange}
+                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline"
+                            required
+                        >
+                            <option value="" disabled selected>
+                                Selecione a deficiencia
+                            </option>
+                            <option value="NENHUMA">Nenhuma</option>
+                        </select>
                     </div>
                     <div className="mb-6">
                         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">

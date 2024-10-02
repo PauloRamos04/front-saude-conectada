@@ -1,10 +1,53 @@
-import React, { useState } from 'react';
-import Login from '../../containers/Login';
-import Register from '../../containers/Register';
+import { useState, useEffect } from 'react';
 
 export default function Header() {
-    const [showInstitucional, setShowInstitucional] = useState(false);
     const [showDuvidas, setShowDuvidas] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [userName, setUserName] = useState('');
+    const [showUserMenu, setShowUserMenu] = useState(false);
+    const [userCPF, setUserCPF] = useState('');
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        
+        if (token) {
+            try {
+                const decodedToken = JSON.parse(atob(token.split('.')[1]));
+                
+                setUserName(decodedToken.firstName); 
+                setUserCPF(decodedToken.cpf);
+    
+                setIsLoggedIn(true);
+    
+            } catch (error) {
+                console.error("Erro ao decodificar o token:", error);
+            }
+        }
+    }, []);
+    
+
+    const handleLogout = () => {
+        console.log("Logout iniciado para CPF:", userCPF);
+        fetch('http://localhost:8080/api/patient/logout', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ cpf: userCPF }),
+        })
+        .then(response => {
+            if (response.ok) {
+                localStorage.removeItem('token');
+                setIsLoggedIn(false);
+                setUserName('');
+                setUserCPF('');
+                console.log("Logout bem-sucedido. Nome e CPF após logout:", userCPF, userName);
+            } else {
+                console.error('Erro ao fazer logout');
+            }
+        })
+        .catch(error => console.error('Erro na requisição de logout:', error));
+    };
 
     return (
         <header className="bg-blue-500 shadow w-full py-4 text-white">
@@ -16,28 +59,7 @@ export default function Header() {
 
                 {/* Navigation Links */}
                 <nav className="flex space-x-6 items-center">
-                    <a href="/sinais-vitais" className="hover:text-gray-300">Sinais Vitais</a>
-
-                    {/* Dropdown Institucional */}
-                    <div className="relative">
-                        <a 
-                            href="#" 
-                            className="hover:text-gray-300 flex items-center"
-                            onClick={(e) => {
-                                e.preventDefault();
-                                setShowInstitucional(!showInstitucional);
-                            }}
-                        >
-                            Institucional <i className="fas fa-caret-down ml-1"></i>
-                        </a>
-                        {/* Dropdown */}
-                        {showInstitucional && (
-                            <div className="absolute left-0 bg-white text-black mt-2 rounded-lg shadow-md z-10 transition-all duration-300 ease-in-out transform opacity-100">
-                                <a href="#" className="block px-4 py-2 hover:bg-gray-200">Submenu 1</a>
-                                <a href="#" className="block px-4 py-2 hover:bg-gray-200">Submenu 2</a>
-                            </div>
-                        )}
-                    </div>
+                    <a href="/unidades" className="hover:text-gray-300">Unidades</a>
 
                     {/* Dropdown Dúvidas */}
                     <div className="relative">
@@ -51,9 +73,8 @@ export default function Header() {
                         >
                             Dúvidas <i className="fas fa-caret-down ml-1"></i>
                         </a>
-                        {/* Dropdown */}
                         {showDuvidas && (
-                            <div className="absolute left-0 bg-white text-black mt-2 rounded-lg shadow-md z-10 transition-all duration-300 ease-in-out transform opacity-100">
+                            <div className="absolute left-0 bg-white text-black mt-2 rounded-lg shadow-md z-10">
                                 <a href="#" className="block px-4 py-2 hover:bg-gray-200">FAQ Médicos</a>
                                 <a href="#" className="block px-4 py-2 hover:bg-gray-200">FAQ Pacientes</a>
                                 <a href="#" className="block px-4 py-2 hover:bg-gray-200">FAQ Vacinas</a>
@@ -63,20 +84,48 @@ export default function Header() {
                         )}
                     </div>
 
+                    <a href="/trabalhe-conosco" className="hover:text-gray-300">Trabalhe Conosco</a>
                     <a href="/contato" className="hover:text-gray-300">Contato</a>
-                    <a href="/consultas" className="px-4 py-2 bg-green-500 rounded-lg hover:bg-green-600">Minhas Consultas</a>
+
+                    {isLoggedIn && (
+                        <a href="/consultas" className="px-4 py-2 bg-green-500 rounded-lg hover:bg-green-600">Minhas Consultas</a>
+                    )}
                 </nav>
 
                 {/* Authentication Links */}
-                <div className="flex space-x-4 items-center">
-                    <a href="/register" className="hover:text-gray-300">Cadastrar</a>
-                    <a href="/login" className="px-4 py-2 bg-green-500 rounded-lg hover:bg-green-600">Entrar</a>
+                <div className="flex space-x-4 items-center relative">
+                    {isLoggedIn ? (
+                        <div className="relative">
+                            <div
+                                className="flex items-center cursor-pointer"
+                                onClick={() => setShowUserMenu(!showUserMenu)}
+                            >
+                                {/* Ícone de foto e Nome do usuário */}
+                                <img src="/path-to-avatar.jpg" alt="" className="w-8 h-8 rounded-full mr-2" />
+                                <span>{userName}</span>
+                                <i className="fas fa-caret-down ml-2"></i>
+                            </div>
+                            
+                            {/* Bandeja de opções */}
+                            {showUserMenu && (
+                                <div className="absolute right-0 bg-white text-black mt-2 rounded-lg shadow-md z-10 w-48">
+                                    <a href="/change-password" className="block px-4 py-2 hover:bg-gray-200">Troca de Senha</a>
+                                    <button 
+                                        onClick={handleLogout} 
+                                        className="block w-full text-left px-4 py-2 hover:bg-gray-200"
+                                    >
+                                        Logout
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    ) : (
+                        <>
+                            <a href="/register" className="hover:text-gray-300">Cadastrar</a>
+                            <a href="/login" className="px-4 py-2 bg-green-500 rounded-lg hover:bg-green-600">Entrar</a>
+                        </>
+                    )}
                 </div>
-            </div>
-
-            {/* Arrow Down to Indicate More Content */}
-            <div className="flex justify-center mt-2 animate-bounce">
-                <i className="fas fa-chevron-down text-xl text-gray-300"></i>
             </div>
         </header>
     );
