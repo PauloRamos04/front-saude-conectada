@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
+import { useNavigate } from 'react-router-dom';
 
 export default function AgendarConsulta() {
     const [especialidade, setEspecialidade] = useState('');
@@ -13,7 +14,17 @@ export default function AgendarConsulta() {
     const [horariosDisponiveis, setHorariosDisponiveis] = useState([]);
     const [error, setError] = useState('');
 
+    const navigate = useNavigate(); // Hook para navegação
+
     useEffect(() => {
+        const token = localStorage.getItem('token');
+        
+        if (!token) {
+            // Redireciona para o login se o token não for encontrado
+            navigate('/login');
+            return;
+        }
+
         const fetchData = async () => {
             try {
                 const resEspecialidades = await fetch('http://localhost:8081/api/especialidades');
@@ -30,33 +41,29 @@ export default function AgendarConsulta() {
         };
 
         fetchData();
-    }, []);
+    }, [navigate]);
 
     const handleEspecialidadeChange = (e) => {
-        const selectedEspecialidade = e.target.value;
-        setEspecialidade(selectedEspecialidade);
+        setEspecialidade(e.target.value);
         resetFields();
     };
 
     const handleUnidadeChange = async (e) => {
-        const selectedUnidade = e.target.value;
-        setUnidade(selectedUnidade); // Atualiza o estado da unidade
-        resetFields(); // Reseta os campos abaixo
+        setUnidade(e.target.value);
+        resetFields();
 
-        if (especialidade && selectedUnidade) {
-            await fetchDatasDisponiveis(especialidade, selectedUnidade);
+        if (especialidade && e.target.value) {
+            await fetchDatasDisponiveis(especialidade, e.target.value);
         }
     };
 
     const handleDataChange = async (e) => {
-        const selectedData = e.target.value;
-        setData(selectedData);
-        setHorario(''); // Reset horario ao mudar data
-        setHorariosDisponiveis([]); // Limpar horários disponíveis
+        setData(e.target.value);
+        setHorario('');
+        setHorariosDisponiveis([]);
 
-        // Chama a função para buscar horários disponíveis
         if (especialidade && unidade) {
-            await fetchHorariosDisponiveis(especialidade, unidade, selectedData);
+            await fetchHorariosDisponiveis(especialidade, unidade, e.target.value);
         }
     };
 
@@ -98,12 +105,6 @@ export default function AgendarConsulta() {
 
     const fetchHorariosDisponiveis = async (especialidade, unidade, data) => {
         const token = localStorage.getItem('token');
-        
-        if (!token) {
-            setError('Token de acesso não encontrado. Faça login novamente.');
-            return;
-        }
-    
         try {
             const res = await fetch(`http://localhost:8081/api/datas-disponiveis?especialidade=${especialidade}&unidade=${unidade}&data=${data}`, {
                 method: 'GET',
@@ -112,13 +113,13 @@ export default function AgendarConsulta() {
                     'Content-Type': 'application/json'
                 },
             });
-    
+
             if (!res.ok) {
                 handleFetchError(res);
             }
-    
+
             const horarioData = await res.json();
-    
+
             if (Array.isArray(horarioData) && horarioData.length === 0) {
                 setError('Não há horários disponíveis para esta especialidade e unidade.');
                 setHorariosDisponiveis([]);
@@ -141,7 +142,7 @@ export default function AgendarConsulta() {
     };
 
     const handleSubmit = async (e) => {
-        e.preventDefault(); // Previne o comportamento padrão de recarregar a página
+        e.preventDefault();
 
         if (!especialidade || !unidade || !data || !horario) {
             setError('Por favor, preencha todos os campos obrigatórios.');
@@ -188,7 +189,6 @@ export default function AgendarConsulta() {
     };
 
     const extractCpfFromToken = (token) => {
-        // Função para decodificar o token e extrair o CPF
         if (!token) return null;
         const payload = JSON.parse(atob(token.split('.')[1]));
         return payload.cpf; // Supondo que o CPF esteja no payload do token

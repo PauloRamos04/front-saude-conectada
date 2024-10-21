@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Home from './containers/Home/index.jsx';
 import Register from './containers/Register/index.jsx';
@@ -15,6 +14,7 @@ function App() {
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
                 <Route path='/consultas' element={<Consultas/>} />
+                {/* <Route path="/agendamentos" element={<Agendamentos />} /> */}
                 <Route path='/marcar-consulta' element={<MarcarConsulta/>} />
             </Routes>
         </Router>

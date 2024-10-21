@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css'; // Importando o CSS do Toastify
 import Header from '../../components/Header';
+import Footer from '../../components/Footer';
 
 const notify = (type, message) => {
     if (type === 'success') {
@@ -58,7 +59,7 @@ const Login = () => {
             // Mostra a notificação de sucesso
             setTimeout(() => {
                 notify('success', message || 'Login realizado com sucesso!');
-                 // Redireciona para a página inicial
+                // Redireciona para a página inicial
             }, 3000);
         } catch (error) {
             let errorMessage = 'Falha na autenticação'; // Mensagem padrão
@@ -125,11 +126,14 @@ const Login = () => {
                     >
                         Login
                     </button>
+                    <p className='text-gray-700 text-sm mb-2'>
+                        Ainda não possui uma conta? <a href='/register' className='text-blue-500 hover:underline font-normal'>Registre-se</a>
+                    </p>
+
+
                 </form>
             </main>
-            <footer className="mt-10 text-gray-500">
-                <p>© 2024 Saúde Conectada. Todos os direitos reservados.</p>
-            </footer>
+            <Footer></Footer>
             <ToastContainer
                 position="top-right"
                 autoClose={5000}
