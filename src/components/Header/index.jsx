@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 
 export default function Header() {
-    const [showDuvidas, setShowDuvidas] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [userName, setUserName] = useState('');
     const [showUserMenu, setShowUserMenu] = useState(false);
@@ -61,31 +60,7 @@ export default function Header() {
                 <nav className="flex space-x-6 items-center">
                     <a href="/unidades" className="hover:text-gray-300">Unidades</a>
 
-                    {/* Dropdown Dúvidas */}
-                    <div className="relative">
-                        <a 
-                            href="#" 
-                            className="hover:text-gray-300 flex items-center"
-                            onClick={(e) => {
-                                e.preventDefault();
-                                setShowDuvidas(!showDuvidas);
-                            }}
-                        >
-                            Dúvidas <i className="fas fa-caret-down ml-1"></i>
-                        </a>
-                        {showDuvidas && (
-                            <div className="absolute left-0 bg-white text-black mt-2 rounded-lg shadow-md z-10">
-                                <a href="#" className="block px-4 py-2 hover:bg-gray-200">FAQ Médicos</a>
-                                <a href="#" className="block px-4 py-2 hover:bg-gray-200">FAQ Pacientes</a>
-                                <a href="#" className="block px-4 py-2 hover:bg-gray-200">FAQ Vacinas</a>
-                                <a href="#" className="block px-4 py-2 hover:bg-gray-200">FAQ Campanha</a>
-                                <a href="#" className="block px-4 py-2 hover:bg-gray-200">FAQ Contato</a>
-                            </div>
-                        )}
-                    </div>
-
                     <a href="/trabalhe-conosco" className="hover:text-gray-300">Trabalhe Conosco</a>
-                    <a href="/contato" className="hover:text-gray-300">Contato</a>
 
                     {isLoggedIn && (
                         <a href="/consultas" className="px-4 py-2 bg-green-500 rounded-lg hover:bg-green-600">Minhas Consultas</a>
@@ -109,7 +84,6 @@ export default function Header() {
                             {/* Bandeja de opções */}
                             {showUserMenu && (
                                 <div className="absolute right-0 bg-white text-black mt-2 rounded-lg shadow-md z-10 w-48">
-                                    <a href="/change-password" className="block px-4 py-2 hover:bg-gray-200">Troca de Senha</a>
                                     <button 
                                         onClick={handleLogout} 
                                         className="block w-full text-left px-4 py-2 hover:bg-gray-200"

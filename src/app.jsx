@@ -5,6 +5,9 @@ import Login from './containers/Login/index.jsx';
 import './index.css';
 import Consultas from './containers/Consulta/index.jsx';
 import MarcarConsulta from './containers/Marcar-Consulta/index.jsx';
+import TrabalheConosco from './containers/trabalhe_conosco/index.jsx';
+import UnidadesProximas from './containers/unidades/index.jsx';
+import CampanhaAedes from './containers/campanha/index.jsx';
 
 function App() {
     return (
@@ -14,7 +17,9 @@ function App() {
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
                 <Route path='/consultas' element={<Consultas/>} />
-                {/* <Route path="/agendamentos" element={<Agendamentos />} /> */}
+                <Route path='/unidades' element={<UnidadesProximas/>} />
+                <Route path='/campanhas' element={<CampanhaAedes/>} />
+                <Route path='/trabalhe-conosco' element={<TrabalheConosco/>} />
                 <Route path='/marcar-consulta' element={<MarcarConsulta/>} />
             </Routes>
         </Router>
